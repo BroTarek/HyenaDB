@@ -8,6 +8,29 @@ struct DataEntry{
   string bufferTag;
   int BufferId;
 };
+class BufferTable{
+    private:
+      int BufferTableSize;
+      std::forward_list<DataEntry>* BuffferTable;
+    public:
+      BufferTable(int BufferTableSize){
+          this->BufferTableSize=BufferTableSize;
+          this->BuffferTable=new std::forward_list<DataEntry>[BufferTableSize];
+      }
+      void InsertToBufferTable(DataEntry Element,int index){
+       // ✅ Modifies the actual list inside the table
+this->BuffferTable[index].push_front(Element);
+
+      }
+      std::forward_list<DataEntry>* ReturnBufferTableElemnts(){
+        return this->BuffferTable;
+      }
+      ~BufferTable(){
+        delete[] this->BuffferTable;
+      }
+    
+      
+};
 
 int main()
 { 
@@ -20,20 +43,28 @@ int main()
     DataEntry g={"0x129",9};
     DataEntry h={"0x130",10};
     DataEntry i={"0x131",11};
-    std::forward_list<DataEntry> list1 = {a,b,c};
-
-    std::forward_list<DataEntry> list2 = {d, e, f};
-
-    std::forward_list<DataEntry> list3 = {g,h,i};
-    
-    std::forward_list<DataEntry> BuffferTable[4] = {list1, list2, list3};
-    for (forward_list<DataEntry> LinkedListElement : BuffferTable)
-    {
-        for (DataEntry element : LinkedListElement)
-        {
-            cout << "this buffer tag"<<" "<<element.bufferTag<<" "<<"corresponds to this buffer id in the descriptor"<<" "<<element.BufferId << endl;
+    DataEntry List[9] = {a,b,c,d,e,f,g,h,i};
+   
+    BufferTable BuffTable(9);
+    int index=0;
+    for(int i=0;i<9;i++){
+       if(i%2==0){
+        index=2;
+        BuffTable.InsertToBufferTable(List[i],index);
+       }
+       if(i%2==1){
+        index=3;
+        BuffTable.InsertToBufferTable(List[i],index);
+       }
+       
+    };
+    auto* LinkedListElements = BuffTable.ReturnBufferTableElemnts();
+    for (int i=0;i<9;i++){
+        for(auto element: LinkedListElements[i]){
+            std::cout<<"this tag"<<" "<<element.bufferTag<<" "<<"corresponds to this id"<<""<<element.BufferId<<endl;
         }
     }
+    
     return 0;
 }
 
